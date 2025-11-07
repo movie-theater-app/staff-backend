@@ -2,11 +2,13 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3001;
+const cors = require('cors');
 
 const movieRoutes = require('./routes/movieRoutes');
 const theatreRoutes = require('./routes/theatreRoutes');
 
 app.use(express.json());
+app.use(cors());
 
 app.use('/api/movie', movieRoutes);
 app.use('/api/theatres', theatreRoutes);

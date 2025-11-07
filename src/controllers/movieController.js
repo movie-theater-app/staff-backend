@@ -21,10 +21,10 @@ async function searchTMDBMovie(req, res) {
         });
 
         const results = data.results.map((movie) => ({
-            tmdbID: movie.id,
+            id: movie.id,
             title: movie.title,
             releaseDate: movie.release_date,
-            posterPath: movie.poster_path ? `https://image.tmdb.org/t/p/w200/${movie.poster_path}` : null
+            posterPath: movie.poster_path ? `https://image.tmdb.org/t/p/w92/${movie.poster_path}` : null
         }));
 
         res.json(results);
@@ -32,16 +32,16 @@ async function searchTMDBMovie(req, res) {
         res.status(500).json({error: e});
     }
 }
-
-async function importTMDBMovie(req, res) {
+async function getTMDBMovieByID(req, res) {
     const { tmbId } = req.params;
+
+
     try {
         const { data : movie } = await axios.get(`${TMDB_API_URL}/movie/${tmbId}`,{
             params: {
                 api_key: TMDB_API_KEY,
             }
         })
-
         const { data: {results} } = await axios.get(`${TMDB_API_URL}/movie/${tmbId}/videos`,{
             params: {
                 api_key: TMDB_API_KEY,
@@ -58,15 +58,26 @@ async function importTMDBMovie(req, res) {
             id: tmbId,
             title: movie.title,
             trailer_url: trailerURL,
-            genre: movie.GENRE, // CHANGE THIS; THERE IS AN ARRAY OF OBJECTS FOR THE GENRE
+            genre: movie.status, // CHANGE THIS; THERE IS AN ARRAY OF OBJECTS FOR THE GENRE
             duration_minutes: movie.runtime,
             description: movie.overview,
             poster_url: movie.poster_path ? `http://image.tmdb.org/t/p/w185${movie.poster_path}` : null, // This is hardcoded the URL, it can be accessed through the configuration but it would mean one more API call and Idk if it means something
             age_rating: movie.vote_count, //THIS IS NOT THE AGE RATING BUT THERE IS NOT AGE RATING IN THIS API, JUST ADULT OR NOT
         }
 
-        await Movie.addMovie(movieData);
-        res.status(201).json(movie);
+        res.status(201).json(movieData);
+    } catch (e) {
+        console.error(e);
+        res.status(404).json({error: e});
+    }
+}
+
+
+
+async function importMovie(req, res) {
+    try {
+        await Movie.addMovie(req.body);
+        res.status(201).json(req.body);
     } catch (error) {
         console.error("Error adding movie: " + error);
         res.status(500).json({error: "Failed to add movie"})
@@ -117,7 +128,8 @@ async function deleteMovie(req, res) {
 
 module.exports = {
     searchTMDBMovie,
-    importTMDBMovie,
+    getTMDBMovieByID,
+    importMovie,
     updateMovie,
     getAllMovies,
     getMovieById,
