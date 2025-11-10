@@ -19,6 +19,7 @@ async function addMovie(movieData) {
         (id,title, trailer_url, genre, duration_minutes, description, poster_url, age_rating)
         VALUES
         ($1,$2,$3,$4,$5,$6,$7,$8)
+        ON CONFLICT (id) DO NOTHING
         RETURNING *;
     `;
 
@@ -34,6 +35,12 @@ async function addMovie(movieData) {
     ]
 
    const result = await db.query(query, values);
+
+    if (result.rowCount === 0) {
+        console.log(`Error adding movie. Movie with ID ${id} already exists`);
+        return null;
+    }
+
     return result.rows[0];
 
 }

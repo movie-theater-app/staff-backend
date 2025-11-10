@@ -1,5 +1,6 @@
 const axios = require("axios");
 const Movie = require('../models/movieModel');
+const {addMovie} = require("../models/movieModel");
 require('dotenv').config();
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -52,17 +53,30 @@ async function getTMDBMovieByID(req, res) {
             video.type === "Trailer" &&
             video.official === true,
         );
+
+        const {data : {results : releaseResults} } = await axios.get(`${TMDB_API_URL}/movie/${tmbId}/release_dates`,{
+            params: {
+                api_key: TMDB_API_KEY,
+            }
+        });
+
+
+        const finnishRelease = releaseResults.find((r) => r.iso_3166_1 === "ES");
+        const ageRating = finnishRelease.release_dates[0].certification;
+
+        const genres = movie.genres.map((genre) => genre.name).join(", ");
+
         const firstTrailer = officialTrailers.length > 0 ? officialTrailers[0] : null;
         const trailerURL = firstTrailer ? `https://www.youtube.com/watch?v=${firstTrailer.key}` : null;
         const movieData = {
             id: tmbId,
             title: movie.title,
             trailer_url: trailerURL,
-            genre: movie.status, // CHANGE THIS; THERE IS AN ARRAY OF OBJECTS FOR THE GENRE
+            genre: genres,
             duration_minutes: movie.runtime,
             description: movie.overview,
-            poster_url: movie.poster_path ? `http://image.tmdb.org/t/p/w185${movie.poster_path}` : null, // This is hardcoded the URL, it can be accessed through the configuration but it would mean one more API call and Idk if it means something
-            age_rating: movie.vote_count, //THIS IS NOT THE AGE RATING BUT THERE IS NOT AGE RATING IN THIS API, JUST ADULT OR NOT
+            poster_url: movie.poster_path ? `http://image.tmdb.org/t/p/w185${movie.poster_path}` : null,
+            age_rating: ageRating, // THIS AGE RATING IS FOR SPAIN AS IT IS ONLY INTEGERS.
         }
 
         res.status(201).json(movieData);
@@ -76,8 +90,11 @@ async function getTMDBMovieByID(req, res) {
 
 async function importMovie(req, res) {
     try {
-        await Movie.addMovie(req.body);
-        res.status(201).json(req.body);
+        addedMovie = await Movie.addMovie(req.body);
+        if(!addedMovie) {
+            throw new error("There is already movie with this ID")
+        }
+        res.status(201).json(addedMovie);
     } catch (error) {
         console.error("Error adding movie: " + error);
         res.status(500).json({error: "Failed to add movie"})
