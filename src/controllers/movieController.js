@@ -60,9 +60,9 @@ async function getTMDBMovieByID(req, res) {
             }
         });
 
+        const finnishRelease = releaseResults.find((r) => r.iso_3166_1 === "FI");
 
-        const finnishRelease = releaseResults.find((r) => r.iso_3166_1 === "ES");
-        const ageRating = finnishRelease.release_dates[0].certification;
+        const ageRating = finnishRelease?.release_dates?.[0]?.certification || '';
 
         const genres = movie.genres.map((genre) => genre.name).join(", ");
 
