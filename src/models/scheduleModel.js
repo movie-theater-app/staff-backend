@@ -132,6 +132,22 @@ async function getScheduleByMovie(movie_id) {
     return result.rows;
 }
 
+async function getScheduleByMovieAndTheater( movie_id, theater_id) {
+    const query = `
+    SELECT *
+    FROM schedules
+    WHERE movie_id = $1
+    AND theater_id = $2;`;
+
+    const result = await db.query(query,[movie_id, theater_id]);
+
+    if (result.rowCount === 0) {
+        console.warn(`Schedule by movie with id: ${movie_id} and theater with id:${theater_id}not found`);
+    }
+
+    return result.rows;
+}
+
 module.exports = {
     importSchedule,
     updateSchedule,
@@ -141,4 +157,5 @@ module.exports = {
     getScheduleByScreening_date,
     getScheduleByAuditorium,
     getScheduleByMovie,
+    getScheduleByMovieAndTheater,
 }

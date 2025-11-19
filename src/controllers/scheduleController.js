@@ -78,6 +78,17 @@ async function getScheduleByMovie(req, res) {
     }
 }
 
+async function getScheduleByMovieAndTheater(req, res) {
+    const {movie_id, theater_id} = req.params;
+    try {
+        const schedules = await Schedule.getScheduleByMovieAndTheater(movie_id, theater_id);
+        res.status(200).json({schedules});
+    } catch (error){
+        console.error(`Error getting schedule by movie with id: ${movie_id}`, error.message);
+        res.status(404).json({error: error})
+    }
+}
+
 module.exports = {
     importSchedule,
     updateSchedule,
@@ -87,4 +98,5 @@ module.exports = {
     getScheduleByScreening_date,
     getScheduleByAuditorium,
     getScheduleByMovie,
+    getScheduleByMovieAndTheater,
 }
