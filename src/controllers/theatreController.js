@@ -1,5 +1,9 @@
 const Theatre = require('../models/theatreModel');
+<<<<<<< HEAD
 const db = require("../db/db");
+=======
+const seatModel = require('../models/seatModel'); 
+>>>>>>> feature/seat-map
 
 async function addTheatre(req, res) {
     try {
@@ -18,7 +22,17 @@ async function addTheatre(req, res) {
 async function addAuditorium(req, res) {
     try {
         const auditorium = await Theatre.addAuditorium(req.body);
-        res.status(201).json(auditorium.rows[0]);
+        const auditoriumId = auditorium.rows[0].id;
+        const seatCount = req.body.seat_capacity;
+        // create seats for this auditorium id
+        await seatModel.createSeats(auditoriumId, seatCount);
+        // success 
+        res.status(201).json({
+        message: 'Auditorium and seats created successfully',
+        auditorium: auditorium.rows[0],
+        createdSeats: seatCount
+        });
+       // fail
     } catch (error) {
         console.error("Error adding auditorium: ", error.message);
 
