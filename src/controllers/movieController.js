@@ -102,8 +102,9 @@ async function importMovie(req, res) {
 }
 
 async function updateMovie(req, res) {
+    const {id} = req.params;
     try{
-        const movie = await Movie.updateMovie(req.body);
+        const movie = await Movie.updateMovie(id, req.body);
         if(!movie) return res.status(404).json({error: "No movie found to update"});
         res.status(200).json(movie);
     } catch (error) {

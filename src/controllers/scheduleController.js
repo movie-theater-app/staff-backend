@@ -89,6 +89,17 @@ async function getScheduleByMovieAndTheater(req, res) {
     }
 }
 
+async function deleteSchedule(req,res){
+    const {id} = req.params;
+    try {
+        await Schedule.deleteSchedule(id);
+        res.status(204).send();
+    } catch (error){
+        console.error(`Error deleting schedule with id: ${id}`, error.message);
+        res.status(404).json({error: error})
+    }
+}
+
 module.exports = {
     importSchedule,
     updateSchedule,
@@ -99,4 +110,5 @@ module.exports = {
     getScheduleByAuditorium,
     getScheduleByMovie,
     getScheduleByMovieAndTheater,
+    deleteSchedule,
 }

@@ -96,7 +96,7 @@ async function deleteMovie(id) {
 
 async function getAllMovies() {
     const query =`
-    SELECT id,title 
+    SELECT * 
     FROM movies
     ORDER BY title;
     `;

@@ -148,6 +148,15 @@ async function getScheduleByMovieAndTheater( movie_id, theater_id) {
     return result.rows;
 }
 
+async function deleteSchedule(id) {
+    const query = `
+    DELETE 
+    FROM schedules
+    WHERE id = $1`;
+
+    await db.query(query,[id]);
+}
+
 module.exports = {
     importSchedule,
     updateSchedule,
@@ -158,4 +167,5 @@ module.exports = {
     getScheduleByAuditorium,
     getScheduleByMovie,
     getScheduleByMovieAndTheater,
+    deleteSchedule,
 }
