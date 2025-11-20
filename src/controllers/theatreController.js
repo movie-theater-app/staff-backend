@@ -1,9 +1,6 @@
 const Theatre = require('../models/theatreModel');
-<<<<<<< HEAD
 const db = require("../db/db");
-=======
 const seatModel = require('../models/seatModel'); 
->>>>>>> feature/seat-map
 
 async function addTheatre(req, res) {
     try {
