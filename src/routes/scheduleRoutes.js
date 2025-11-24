@@ -11,6 +11,7 @@ router.get('/movie/:movie_id', scheduleController.getScheduleByMovie);
 router.get('/auditorium/:auditorium_id', scheduleController.getScheduleByAuditorium);
 router.get('/date/:date', scheduleController.getScheduleByScreening_date);
 router.get('/movie_theater/:movie_id/:theater_id', scheduleController.getScheduleByMovieAndTheater);
+router.delete('/:id', scheduleController.deleteSchedule)
 
 router.get('/:id', scheduleController.getScheduleById);
 

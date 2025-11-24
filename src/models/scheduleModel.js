@@ -11,12 +11,19 @@ async function importSchedule (scheduleData) {
     } = scheduleData;
 
     const query = `
-    INSERT INTO schedules
-    (movie_id, theater_id, auditorium_id, screening_date, start_time, end_time)
-    VALUES 
-    ($1, $2, $3, $4, $5, $6)
-    ON CONFLICT (auditorium_id, screening_date, start_time) DO NOTHING
-    RETURNING *;`;
+        INSERT INTO schedules
+        (movie_id, theater_id, auditorium_id, screening_date, start_time, end_time)
+        SELECT $1, $2, $3, $4, $5, $6
+            WHERE NOT EXISTS (
+      SELECT 1
+      FROM schedules s
+      WHERE s.auditorium_id = $3
+            AND s.screening_date = $4
+            AND $5 < s.end_time
+            AND $6 > s.start_time
+            )
+            RETURNING *;
+    `;
 
 
     const values = [
@@ -31,7 +38,9 @@ async function importSchedule (scheduleData) {
     const result = await db.query(query, values);
 
     if (result.rowCount === 0){
-        console.error(`Error adding schedule, there is already a movie playing at that time (${start_time}) and day (${screening_date}) in that auditorium with id: ${auditorium_id}) `);
+        const error = `Error adding schedule, there is already a movie 
+        playing with start time: ${start_time}, end time: ${end_time} and day (${screening_date}) in that auditorium with id: ${auditorium_id}) `
+        console.error(error);
         return null;
     }
 
@@ -148,6 +157,15 @@ async function getScheduleByMovieAndTheater( movie_id, theater_id) {
     return result.rows;
 }
 
+async function deleteSchedule(id) {
+    const query = `
+    DELETE 
+    FROM schedules
+    WHERE id = $1`;
+
+    await db.query(query,[id]);
+}
+
 module.exports = {
     importSchedule,
     updateSchedule,
@@ -158,4 +176,5 @@ module.exports = {
     getScheduleByAuditorium,
     getScheduleByMovie,
     getScheduleByMovieAndTheater,
+    deleteSchedule,
 }

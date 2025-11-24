@@ -69,14 +69,13 @@ async function getTMDBMovieByID(req, res) {
         const firstTrailer = officialTrailers.length > 0 ? officialTrailers[0] : null;
         const trailerURL = firstTrailer ? `https://www.youtube.com/watch?v=${firstTrailer.key}` : null;
         const movieData = {
-            id: tmbId,
             title: movie.title,
             trailer_url: trailerURL,
             genre: genres,
             duration_minutes: movie.runtime,
             description: movie.overview,
             poster_url: movie.poster_path ? `http://image.tmdb.org/t/p/w185${movie.poster_path}` : null,
-            age_rating: ageRating, // THIS AGE RATING IS FOR SPAIN AS IT IS ONLY INTEGERS.
+            age_rating: ageRating,
         }
 
         res.status(201).json(movieData);
@@ -102,8 +101,9 @@ async function importMovie(req, res) {
 }
 
 async function updateMovie(req, res) {
+    const {id} = req.params;
     try{
-        const movie = await Movie.updateMovie(req.body);
+        const movie = await Movie.updateMovie(id, req.body);
         if(!movie) return res.status(404).json({error: "No movie found to update"});
         res.status(200).json(movie);
     } catch (error) {
