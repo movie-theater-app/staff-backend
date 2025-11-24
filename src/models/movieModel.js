@@ -4,7 +4,6 @@ const result = require("pg/lib/query");
 
 async function addMovie(movieData) {
     const {
-        id,
         title,
         trailer_url,
         genre,
@@ -14,17 +13,20 @@ async function addMovie(movieData) {
         age_rating,
     } = movieData;
 
+    const check = await db.query('SELECT * FROM movies WHERE title = $1', [title]);
+    if (check.rows.length > 0) {
+        throw new Error('Movie with this title already exists');
+    }
+
     const query =`
         INSERT INTO movies
-        (id,title, trailer_url, genre, duration_minutes, description, poster_url, age_rating)
+        (title, trailer_url, genre, duration_minutes, description, poster_url, age_rating)
         VALUES
-        ($1,$2,$3,$4,$5,$6,$7,$8)
-        ON CONFLICT (id) DO NOTHING
+        ($1,$2,$3,$4,$5,$6,$7)
         RETURNING *;
     `;
 
     const values = [
-        id,
         title,
         trailer_url,
         genre,
@@ -37,7 +39,7 @@ async function addMovie(movieData) {
    const result = await db.query(query, values);
 
     if (result.rowCount === 0) {
-        console.log(`Error adding movie. Movie with ID ${id} already exists`);
+        console.log(`Error adding movie. Movie with title ${title} already exists`);
         return null;
     }
 
