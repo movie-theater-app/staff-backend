@@ -100,6 +100,22 @@ async function deleteSchedule(req,res){
     }
 }
 
+async function getSeatsBySchedule(req, res) {
+    const { id } = req.params;
+    try {
+        const result = await db.query(
+            `SELECT s.id, s.seat_id, s.status
+             FROM showtime_seats s
+             WHERE s.schedule_id = $1`,
+             [id]
+        );
+        res.status(200).json({ seats: result.rows });
+    } catch (error) {
+        console.error(`Error fetching seats for schedule ${id}`, error.message);
+        res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     importSchedule,
     updateSchedule,
@@ -111,4 +127,5 @@ module.exports = {
     getScheduleByMovie,
     getScheduleByMovieAndTheater,
     deleteSchedule,
+    getSeatsBySchedule
 }

@@ -1,6 +1,6 @@
 const db = require('../db/db');
 const bcrypt = require('bcrypt');
-import bcrypt from "bcryptjs";
+//import bcrypt from "bcryptjs";
 
 // get usaer by email
 async function getUserByEmail(email) {

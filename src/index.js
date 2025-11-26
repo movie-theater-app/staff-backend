@@ -12,7 +12,7 @@ const movieRoutes = require('./routes/movieRoutes');
 const theatreRoutes = require('./routes/theatreRoutes');
 const seatRoutes = require('./routes/seatRoutes');
 const scheduleRoutes = require('./routes/scheduleRoutes');
-const authRoutes = require('./routes/authRoutes');
+const authRoutes = require('./routes/authenticationRoutes');
 
 
 app.use(express.json());
