@@ -12,6 +12,11 @@ const movieRoutes = require('./routes/movieRoutes');
 const theatreRoutes = require('./routes/theatreRoutes');
 const seatRoutes = require('./routes/seatRoutes');
 const scheduleRoutes = require('./routes/scheduleRoutes');
+<<<<<<< HEAD
+=======
+const authRoutes = require('./routes/authenticationRoutes');
+
+>>>>>>> 9db4e06 (Temp commit to move changes to dev)
 
 app.use(express.json());
 app.use(cors());
