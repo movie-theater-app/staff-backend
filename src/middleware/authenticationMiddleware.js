@@ -14,12 +14,13 @@ function authRequired(req, res, next) {
     res.status(401).json({ message: 'Invalid token' });
   }
 }
-
-function staffOnly(req, res, next) {
-  if (!req.user?.role) {
-    return res.status(403).json({ message: 'Staff only' });
+function adminOnly(req, res, next) {
+  // Admin on role === true
+  if (req.user?.role !== true) {
+    return res.status(403).json({ message: 'Admin only' });
   }
   next();
 }
 
-module.exports = { authRequired, staffOnly };
+
+module.exports = { authRequired, adminOnly };
