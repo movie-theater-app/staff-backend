@@ -1,6 +1,25 @@
 const db = require('../db/db');
 const bcrypt = require('bcrypt');
-//import bcrypt from "bcryptjs";
+require('dotenv').config();
+
+
+async function createAdminIfNotExists() {
+  const existing = await db.query(
+    `SELECT id FROM users WHERE name = $1 AND role = $2`,
+    ['Admin', true]
+  );
+
+  if (existing.rows.length === 0) {
+    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
+    const result = await db.query(
+      `INSERT INTO users (name, email, role, password) VALUES ($1, $2, $3, $4) RETURNING *`,
+      ['Admin', 'admin@example.com', true, hashedPassword]
+    );
+    console.log('Admin user created:', result.rows[0]);
+  } else {
+    console.log('Admin user already exists.');
+  }
+}
 
 // get usaer by email
 async function getUserByEmail(email) {
@@ -36,6 +55,7 @@ async function setPassword(userId, password) {
 }
 
 module.exports = {
+  createAdminIfNotExists,
   getUserByEmail,
   createUser,
   setPassword
