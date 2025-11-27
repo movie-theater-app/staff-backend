@@ -1,21 +1,73 @@
-const { Pool, types} = require('pg');
+const { Pool, types } = require('pg');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 types.setTypeParser(1082, (val) => val); // return the raw string "YYYY-MM-DD"
 
 const pool = new Pool({
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    database: process.env.DB_NAME,
+    user: process.env.DB_USER || process.env.POSTGRES_USER,
+    host: process.env.DB_HOST || process.env.POSTGRES_HOST,
+    database: process.env.DB_NAME || process.env.POSTGRES_DB,
+    password: process.env.DB_PASSWORD || process.env.POSTGRES_PASSWORD,
+    port: process.env.DB_PORT || process.env.POSTGRES_PORT || 5432,
+    ssl: process.env.SSL === 'true' ? { rejectUnauthorized: false } : false
 });
 
 async function query(text, params) {
-    return await pool.query(text, params);
+    try {
+        return await pool.query(text, params);
+    } catch (err) {
+        console.error('Database query error', { text, params, err });
+        throw err;
+    }
 }
+
+// Execute SQL file
+async function executeSqlFile(filename) {
+    const filePath = path.join(__dirname, filename);
+    const sql = fs.readFileSync(filePath, 'utf8');
+    console.log(`Executing ${filename}...`);
+    await pool.query(sql);
+    console.log(`✓ Successfully executed ${filename}`);
+}
+
+// Initialize database for Azure deployment
+async function initializeDatabase() {
+    const isProduction = process.env.NODE_ENV === 'production' || process.env.AZURE_SQL_INIT === 'true';
+    
+    if (!isProduction) {
+        console.log('Skipping database initialization (not in production mode)');
+        return;
+    }
+
+    try {
+        console.log('Starting Azure database initialization...');
+        
+        // Drop and recreate schema if FORCE_DB_RESET is set
+        if (process.env.FORCE_DB_RESET === 'true') {
+            console.log('FORCE_DB_RESET detected - dropping and recreating schema...');
+            await pool.query('DROP SCHEMA IF EXISTS public CASCADE');
+            await pool.query('CREATE SCHEMA public');
+            console.log('Schema recreated successfully');
+        }
+        
+        await executeSqlFile('init.sql');
+        await executeSqlFile('alter.sql');
+        
+        console.log('Database initialization completed');
+    } catch (error) {
+        console.error('Database initialization failed:', error);
+    }
+}
+
+initializeDatabase().catch(err => {
+    console.error('Failed to initialize database:', err);
+});
 
 module.exports = {
     query,
+    pool,
+    executeSqlFile,
+    initializeDatabase
 };
-
