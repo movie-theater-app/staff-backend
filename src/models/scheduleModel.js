@@ -167,8 +167,19 @@ async function deleteSchedule(id) {
 
     await db.query(query,[id]);
 }
-
+// seats per showtime
 async function seatsPerShowtime(scheduleId, auditoriumId) {
+
+      // check if seats already exist for this showtime
+    const existing = await db.query(
+        `SELECT 1 FROM showtime_seats WHERE schedule_id = $1 LIMIT 1`,
+        [scheduleId]
+    );
+    if (existing.rowCount > 0) {
+        console.log(`Showtime seats already exist for schedule ${scheduleId}`);
+        return;
+    }
+
     // get auditorium seats
     const seatsResult = await db.query(
         `SELECT id, status FROM seats WHERE auditorium_id = $1`,
@@ -178,9 +189,7 @@ async function seatsPerShowtime(scheduleId, auditoriumId) {
     if (seatsResult.rowCount === 0) {
         throw new Error(`No seats found for auditorium ${auditoriumId}`);
     }
-
     const seatIds = seatsResult.rows;
-
     // insert each seat into showtime_seats-table
     for (const seat of seatIds) {
         await db.query(
