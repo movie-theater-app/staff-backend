@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const movieController = require('../controllers/movieController');
+//const { authRequired} = require('../middleware/authenticationMiddleware');
 
 // router.post('/', movieController.addMovie);
 
