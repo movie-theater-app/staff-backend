@@ -3,6 +3,8 @@ const db = require("../db/db");
 const seatModel = require('../models/seatModel'); 
 
 async function addTheatre(req, res) {
+   console.log("REQ.BODY:", req.body);
+   console.log("REQ.USER:", req.user);
     try {
         const theatre = await Theatre.addTheatre(req.body);
         res.status(201).json(theatre.rows[0]); 

@@ -12,7 +12,8 @@ const movieRoutes = require('./routes/movieRoutes');
 const theatreRoutes = require('./routes/theatreRoutes');
 const seatRoutes = require('./routes/seatRoutes');
 const scheduleRoutes = require('./routes/scheduleRoutes');
-//const authRoutes = require('./routes/authenticationRoutes');
+const authRoutes = require('./routes/authenticationRoutes');
+const userModel = require('./models/userModel');
 
 app.use(express.json());
 app.use(cors());
@@ -22,11 +23,20 @@ app.use('/api/movie', movieRoutes);
 app.use('/api/theatres', theatreRoutes);
 app.use('/api/seats', seatRoutes)
 app.use('/api/schedule', scheduleRoutes);
+app.use('/api/authentication', authRoutes);
 
 // test
 app.get('/', (req, res) => {
   res.send('Hello from staff-backend');
 });
+
+(async () => {
+  try {
+    await userModel.createAdminIfNotExists();
+  } catch (err) {
+    console.error('Error creating admin:', err);
+  }
+})();
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);

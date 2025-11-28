@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const theatreController = require('../controllers/theatreController');
-//const seatModel = require('../models/seatModel');
+const { authRequired } = require('../middleware/authenticationMiddleware');
 
 /**
  * @swagger
@@ -31,19 +31,19 @@ const theatreController = require('../controllers/theatreController');
  *       '500':
  *         description: "Server error"
  */
-router.post('/', theatreController.addTheatre);
+router.post('/', authRequired, theatreController.addTheatre);
 
 // POST /api/auditoriums
-router.post('/auditoriums', theatreController.addAuditorium);
+router.post('/auditoriums', authRequired, theatreController.addAuditorium);
 
-router.get('/auditoriums', theatreController.getAuditoriums);
-router.get('/auditoriums/:id', theatreController.getAuditoriumById);
+router.get('/auditoriums', authRequired, theatreController.getAuditoriums);
+router.get('/auditoriums/:id', authRequired, theatreController.getAuditoriumById);
 
-router.get('/:theater_id/auditoriums', theatreController.getAuditoriumsByTheater);
+router.get('/:theater_id/auditoriums', authRequired, theatreController.getAuditoriumsByTheater);
 
 
-router.get('/', theatreController.getAllTheaters);
-router.get('/:id', theatreController.getTheaterById);
+router.get('/', authRequired, theatreController.getAllTheaters);
+router.get('/:id', authRequired,  theatreController.getTheaterById);
 
 
 

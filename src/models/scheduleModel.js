@@ -203,6 +203,32 @@ async function seatsPerShowtime(scheduleId, auditoriumId) {
 }
 
 
+async function seatsPerShowtime(scheduleId, auditoriumId) {
+    // get auditorium seats
+    const seatsResult = await db.query(
+        `SELECT id, status FROM seats WHERE auditorium_id = $1`,
+        [auditoriumId]
+    );
+
+    if (seatsResult.rowCount === 0) {
+        throw new Error(`No seats found for auditorium ${auditoriumId}`);
+    }
+
+    const seatIds = seatsResult.rows;
+
+    // insert each seat into showtime_seats-table
+    for (const seat of seatIds) {
+        await db.query(
+            `INSERT INTO showtime_seats (schedule_id, seat_id, status)
+             VALUES ($1, $2, $3)`,
+            [scheduleId, seat.id, seat.status]
+        );
+    }
+
+    return seatIds.length; 
+}
+
+
 module.exports = {
     importSchedule,
     updateSchedule,
