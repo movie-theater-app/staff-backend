@@ -9,10 +9,15 @@ async function createSeatsForAuditorium(req, res) {
   }
 
   try {
+
+    const existingSeats = await seatModel.getSeatsByAuditorium(auditoriumId);
+    if (existingSeats.length > 0) {
+      return res.json({ success: true, createdSeats: 0, message: "Seats already exist" });
+    }
     const count = await seatModel.createSeats(auditoriumId, seatCount);
     res.json({ success: true, createdSeats: count });
   } catch (error) {
-    console.error("Error creating seats:", error);
+    console.error("Error creating seats:", error.message);
     res.status(500).json({ error: "Failed to create seats" });
   }
 }

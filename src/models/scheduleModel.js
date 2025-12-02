@@ -45,6 +45,15 @@ async function importSchedule (scheduleData) {
     }
 
     const schedule = result.rows[0];
+    // check auditorium seats exist
+    const seatsResult = await db.query(
+    `SELECT id, status FROM seats WHERE auditorium_id = $1`,
+    [auditorium_id]
+    );
+        if (seatsResult.rowCount === 0) {
+            throw new Error(`No seats found for auditorium ${auditorium_id}`);
+        }
+    // now create showtime seats
     await seatsPerShowtime(schedule.id, auditorium_id);
     return schedule;
 }
@@ -190,32 +199,6 @@ async function seatsPerShowtime(scheduleId, auditoriumId) {
         throw new Error(`No seats found for auditorium ${auditoriumId}`);
     }
     const seatIds = seatsResult.rows;
-    // insert each seat into showtime_seats-table
-    for (const seat of seatIds) {
-        await db.query(
-            `INSERT INTO showtime_seats (schedule_id, seat_id, status)
-             VALUES ($1, $2, $3)`,
-            [scheduleId, seat.id, seat.status]
-        );
-    }
-
-    return seatIds.length; 
-}
-
-
-async function seatsPerShowtime(scheduleId, auditoriumId) {
-    // get auditorium seats
-    const seatsResult = await db.query(
-        `SELECT id, status FROM seats WHERE auditorium_id = $1`,
-        [auditoriumId]
-    );
-
-    if (seatsResult.rowCount === 0) {
-        throw new Error(`No seats found for auditorium ${auditoriumId}`);
-    }
-
-    const seatIds = seatsResult.rows;
-
     // insert each seat into showtime_seats-table
     for (const seat of seatIds) {
         await db.query(

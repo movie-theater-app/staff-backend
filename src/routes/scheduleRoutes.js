@@ -1,19 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const scheduleController = require('../controllers/scheduleController');
+const { authRequired } = require('../middleware/authenticationMiddleware');
 
 
-router.post('/', scheduleController.importSchedule);
+router.post('/', authRequired, scheduleController.importSchedule);
 
-router.get('/', scheduleController.getSchedules);
-router.get('/theater/:theater_id', scheduleController.getScheduleByTheater);
-router.get('/movie/:movie_id', scheduleController.getScheduleByMovie);
-router.get('/auditorium/:auditorium_id', scheduleController.getScheduleByAuditorium);
-router.get('/date/:date', scheduleController.getScheduleByScreening_date);
-router.get('/movie_theater/:movie_id/:theater_id', scheduleController.getScheduleByMovieAndTheater);
-router.delete('/:id', scheduleController.deleteSchedule)
-router.get('/:id', scheduleController.getScheduleById);
-router.get('/:id/seats', scheduleController.getSeatsBySchedule);
+router.get('/', authRequired, scheduleController.getSchedules);
+router.get('/theater/:theater_id', authRequired, scheduleController.getScheduleByTheater);
+router.get('/movie/:movie_id', authRequired, scheduleController.getScheduleByMovie);
+router.get('/auditorium/:auditorium_id', authRequired, scheduleController.getScheduleByAuditorium);
+router.get('/date/:date', authRequired, scheduleController.getScheduleByScreening_date);
+router.get('/movie_theater/:movie_id/:theater_id', authRequired, scheduleController.getScheduleByMovieAndTheater);
+router.delete('/:id', authRequired, scheduleController.deleteSchedule)
+router.get('/:id', authRequired, scheduleController.getScheduleById);
+router.get('/:id/seats', authRequired, scheduleController.getSeatsBySchedule);
 
 
 module.exports = router;

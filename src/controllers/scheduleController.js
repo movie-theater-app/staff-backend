@@ -7,7 +7,7 @@ async function importSchedule(req, res) {
         res.status(201).json({schedule});
     } catch (error){
         console.error("Error adding schedule: ", error.message);
-        res.status(500).json({error: error})
+        res.status(500).json({error: error.message})
     }
 }
 async function updateSchedule (req, res) {
@@ -20,7 +20,7 @@ async function getSchedules(req,res){
         res.status(200).json({schedules});
     } catch (error){
         console.error("Error getting schedules: ", error.message);
-        res.status(404).json({error: error})
+        res.status(404).json({error: error.message})
     }
 }
 async function getScheduleById(req,res) {
@@ -30,7 +30,7 @@ async function getScheduleById(req,res) {
         res.status(200).json({schedule});
     } catch (error){
         console.error(`Error getting schedule with id: ${id}`, error.message);
-        res.status(404).json({error: error})
+        res.status(404).json({error: error.message})
     }
 }
 
@@ -41,7 +41,7 @@ async function getScheduleByTheater(req,res){
         res.status(200).json({schedules});
     } catch (error){
         console.error(`Error getting schedule by theater with id: ${id}`, error.message);
-        res.status(404).json({error: error})
+        res.status(404).json({error: error.message})
     }
 }
 
@@ -52,7 +52,7 @@ async function getScheduleByScreening_date(req, res) {
         res.status(200).json({schedules});
     } catch (error){
         console.error(`Error getting schedule with date: ${date}`, error.message);
-        res.status(404).json({error: error})
+        res.status(404).json({error: error.message})
     }
 }
 
@@ -63,7 +63,7 @@ async function getScheduleByAuditorium(req,res) {
         res.status(200).json({schedules});
     } catch (error){
         console.error(`Error getting schedule by auditorium with id: ${auditorium_id}`, error.message);
-        res.status(404).json({error: error})
+        res.status(404).json({error: error.message})
     }
 }
 
@@ -74,7 +74,7 @@ async function getScheduleByMovie(req, res) {
         res.status(200).json({schedules});
     } catch (error){
         console.error(`Error getting schedule by movie with id: ${movie_id}`, error.message);
-        res.status(404).json({error: error})
+        res.status(404).json({error: error.message})
     }
 }
 
@@ -85,7 +85,7 @@ async function getScheduleByMovieAndTheater(req, res) {
         res.status(200).json({schedules});
     } catch (error){
         console.error(`Error getting schedule by movie with id: ${movie_id}`, error.message);
-        res.status(404).json({error: error})
+        res.status(404).json({error: error.message})
     }
 }
 
@@ -96,7 +96,7 @@ async function deleteSchedule(req,res){
         res.status(204).send();
     } catch (error){
         console.error(`Error deleting schedule with id: ${id}`, error.message);
-        res.status(404).json({error: error})
+        res.status(404).json({error: error.message})
     }
 }
 

@@ -39,8 +39,13 @@ async function addAuditorium(auditoriumData) {
     `;
 
     const values = [theater_id, name, seat_count];
+    const result = await db.query(query, values);
+    const auditorium = result.rows[0];
 
-    return await db.query(query, values);
+    const { createSeats } = require('./seatModel');
+    await createSeats(auditorium.id, seat_count);
+
+    return result;
 }
 
 async function getAllTheaters() {
