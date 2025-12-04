@@ -13,6 +13,7 @@ const theatreRoutes = require('./routes/theatreRoutes');
 const seatRoutes = require('./routes/seatRoutes');
 const scheduleRoutes = require('./routes/scheduleRoutes');
 const authRoutes = require('./routes/authenticationRoutes');
+const statisticsRoutes = require('./routes/statisticsRoutes');
 const userModel = require('./models/userModel');
 
 app.use(express.json());
@@ -24,6 +25,7 @@ app.use('/api/theatres', theatreRoutes);
 app.use('/api/seats', seatRoutes)
 app.use('/api/schedule', scheduleRoutes);
 app.use('/api/authentication', authRoutes);
+app.use('/api/statistics', statisticsRoutes);
 
 // test
 app.get('/', (req, res) => {
