@@ -80,3 +80,10 @@ ALTER TABLE movie_information
     DROP CONSTRAINT IF EXISTS movie_information_movie_id_fkey,
     ADD CONSTRAINT movie_information_movie_id_fkey FOREIGN KEY (movie_id)
         REFERENCES movies(id) ON DELETE CASCADE;
+
+-- USERS
+ALTER TABLE users
+ALTER COLUMN password DROP NOT NULL;
+
+ALTER TABLE tickets
+ALTER COLUMN barcode_number DROP NOT NULL;
