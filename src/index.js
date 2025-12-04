@@ -13,6 +13,7 @@ const theatreRoutes = require('./routes/theatreRoutes');
 const seatRoutes = require('./routes/seatRoutes');
 const scheduleRoutes = require('./routes/scheduleRoutes');
 const authRoutes = require('./routes/authenticationRoutes');
+const staffRoutes = require('./routes/staffRoutes');
 const statisticsRoutes = require('./routes/statisticsRoutes');
 const userModel = require('./models/userModel');
 const { addStatistics } = require('./db/addStatistics');
@@ -26,6 +27,7 @@ app.use('/api/theatres', theatreRoutes);
 app.use('/api/seats', seatRoutes)
 app.use('/api/schedule', scheduleRoutes);
 app.use('/api/authentication', authRoutes);
+app.use('/api/staff', staffRoutes)
 app.use('/api/statistics', statisticsRoutes);
 
 // test
@@ -33,7 +35,8 @@ app.get('/', (req, res) => {
   res.send('Hello from staff-backend');
 });
 
-(async () => {
+// create admin automatically if missing
+( async () => {
   try {
     await userModel.createAdminIfNotExists();
   } catch (err) {
