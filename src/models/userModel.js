@@ -43,6 +43,7 @@ async function createUser(name, email, role) {
 }
 // staff sets their password during their first login
 async function setPassword(userId, password) {
+  if (!password) throw new Error('Password required');
     const hashedPassword = await bcrypt.hash(password, 10);
     const result = await db.query(
         `UPDATE users 
