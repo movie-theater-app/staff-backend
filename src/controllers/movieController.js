@@ -30,7 +30,8 @@ async function searchTMDBMovie(req, res) {
 
         res.json(results);
     } catch (e) {
-        res.status(500).json({error: e});
+        console.error('TMDB fetch error:', e.response?.data || e.message);
+        res.status(500).json({error: e.response?.data || e.message});
     }
 }
 async function getTMDBMovieByID(req, res) {
