@@ -16,6 +16,7 @@ const authRoutes = require('./routes/authenticationRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const statisticsRoutes = require('./routes/statisticsRoutes');
 const userModel = require('./models/userModel');
+const { addStatistics } = require('./db/addStatistics');
 
 app.use(express.json());
 app.use(cors());
@@ -40,6 +41,11 @@ app.get('/', (req, res) => {
     await userModel.createAdminIfNotExists();
   } catch (err) {
     console.error('Error creating admin:', err);
+  }
+  try {
+    await addStatistics();
+  } catch (err) {
+    console.error('Error adding statistics:', err);
   }
 })();
 
