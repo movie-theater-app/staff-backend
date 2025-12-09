@@ -31,22 +31,20 @@ const { authRequired } = require('../middleware/authenticationMiddleware');
  *       '500':
  *         description: "Server error"
  */
+
+// Theaters
 router.post('/', authRequired, theatreController.addTheatre);
-
-// POST /api/auditoriums
-router.post('/auditoriums', authRequired, theatreController.addAuditorium);
-
-router.get('/auditoriums', authRequired, theatreController.getAuditoriums);
-router.get('/auditoriums/:id', authRequired, theatreController.getAuditoriumById);
-
-router.get('/:theater_id/auditoriums', authRequired, theatreController.getAuditoriumsByTheater);
-
-
 router.get('/', authRequired, theatreController.getAllTheaters);
 router.get('/:id', authRequired,  theatreController.getTheaterById);
-router.put('/edit/:id',  authRequired, theatreController.updateTheatre);
+router.patch('/edit/:id',  authRequired, theatreController.updateTheatre);
+router.delete("/edit/:id", authRequired, theatreController.deleteTheatre);
 
-
+// Auditoriums
+router.post('/auditoriums', authRequired, theatreController.addAuditorium);
+router.get('/auditoriums', authRequired, theatreController.getAuditoriums);
+router.get('/auditoriums/:id', authRequired, theatreController.getAuditoriumById);
+router.get('/:theater_id/auditoriums', authRequired, theatreController.getAuditoriumsByTheater);
+router.delete('/auditoriums/:id', authRequired, theatreController.deleteAuditorium);
 
 module.exports = router;
 

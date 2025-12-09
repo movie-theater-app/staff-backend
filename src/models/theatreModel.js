@@ -70,7 +70,7 @@ async function getTheaterById(id) {
 
 async function getAuditoriumsByTheater(theaterId) {
     const query = `
-    SELECT id, name, theater_id
+    SELECT id, name, theater_id, seat_count
     FROM auditoriums
     WHERE theater_id = $1;`;
 
@@ -125,6 +125,22 @@ async function updateTheatre(id, { name, address, contact_information }) {
     return result.rows[0]; 
 }
 
+async function deleteTheatre(id) {
+    const result = await db.query(
+        "DELETE FROM theaters WHERE id = $1 RETURNING *;",
+        [id]
+    );
+    return result.rows[0];
+}
+
+async function deleteAuditorium(id) {
+    const result = await db.query(
+        "DELETE FROM auditoriums WHERE id = $1 RETURNING *;",
+        [id]
+    );
+    return result.rows[0];
+}
+
 module.exports = {
     addTheatre,
     addAuditorium,
@@ -133,5 +149,7 @@ module.exports = {
     getAuditoriumsByTheater,
     getAuditoriumById,
     getAuditoriums,
-    updateTheatre
+    updateTheatre,
+    deleteTheatre,
+    deleteAuditorium
 };
