@@ -60,7 +60,7 @@ async function getAllTheaters() {
 
 async function getTheaterById(id) {
     const query = `
-    SELECT id, name
+    SELECT id, name, address, contact_information
     FROM theaters
     WHERE id = $1;`;
 
