@@ -44,6 +44,7 @@ router.get('/:theater_id/auditoriums', authRequired, theatreController.getAudito
 
 router.get('/', authRequired, theatreController.getAllTheaters);
 router.get('/:id', authRequired,  theatreController.getTheaterById);
+router.put('/edit/:id',  authRequired, theatreController.updateTheatre);
 
 
 
