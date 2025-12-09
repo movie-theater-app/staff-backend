@@ -97,6 +97,34 @@ async function getAuditoriums(){
     const result = await db.query(query);
     return result.rows;
 }
+
+// update theatre
+async function updateTheatre(id, { name, address, contact_information }) {
+
+    // no duplicates
+    const check = await db.query(
+        'SELECT * FROM theaters WHERE name = $1 AND id != $2',
+        [name, id]
+    );
+    if (check.rows.length > 0) {
+        throw new Error('Another theatre with this name already exists');
+    }
+
+    const query = `
+        UPDATE theaters
+        SET name = $1,
+            address = $2,
+            contact_information = $3
+        WHERE id = $4
+        RETURNING *;
+    `;
+
+    const values = [name, address, contact_information, id];
+    const result = await db.query(query, values);
+
+    return result.rows[0]; 
+}
+
 module.exports = {
     addTheatre,
     addAuditorium,
@@ -104,5 +132,6 @@ module.exports = {
     getTheaterById,
     getAuditoriumsByTheater,
     getAuditoriumById,
-    getAuditoriums
+    getAuditoriums,
+    updateTheatre
 };
