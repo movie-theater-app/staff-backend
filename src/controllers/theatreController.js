@@ -99,6 +99,48 @@ async function getAuditoriums(req, res) {
     }
 }
 
+async function updateTheatre(req, res) {
+    const { id } = req.params; 
+    const { name, address, contact_information } = req.body;
+
+    try {
+        const updatedTheatre = await Theatre.updateTheatre(id, { name, address, contact_information });
+        res.status(200).json(updatedTheatre);
+    } catch (error) {
+        console.error("Error updating theatre:", error.message);
+
+        if (error.message.includes("already exists")) {
+            return res.status(400).json({ error: error.message });
+        }
+
+        res.status(500).json({ error: "Failed to update theatre" });
+    }
+}
+
+async function deleteTheatre(req, res) {
+    const { id } = req.params;
+    try {
+        const deleted = await Theatre.deleteTheatre(id);
+        if (!deleted) return res.status(404).json({ error: "Theatre not found" });
+        res.status(200).json({ message: "Theatre deleted" });
+    } catch (error) {
+        console.error("Error deleting theatre:", error.message);
+        res.status(500).json({ error: "Failed to delete theatre" });
+    }
+}
+
+async function deleteAuditorium(req, res) {
+    const { id } = req.params;
+    try {
+        const deleted = await Theatre.deleteAuditorium(id);
+        if (!deleted) return res.status(404).json({ error: "Auditorium not found" });
+        res.status(200).json({ message: "Auditorium deleted" });
+    } catch (error) {
+        console.error("Error deleting auditorium:", error.message);
+        res.status(500).json({ error: "Failed to delete auditorium" });
+    }
+}
+
 module.exports = {
     addTheatre,
     addAuditorium,
@@ -107,4 +149,7 @@ module.exports = {
     getAuditoriumsByTheater,
     getAuditoriumById,
     getAuditoriums,
+    updateTheatre,
+    deleteTheatre,
+    deleteAuditorium
 };

@@ -60,7 +60,7 @@ async function getAllTheaters() {
 
 async function getTheaterById(id) {
     const query = `
-    SELECT id, name
+    SELECT id, name, address, contact_information
     FROM theaters
     WHERE id = $1;`;
 
@@ -70,7 +70,7 @@ async function getTheaterById(id) {
 
 async function getAuditoriumsByTheater(theaterId) {
     const query = `
-    SELECT id, name, theater_id
+    SELECT id, name, theater_id, seat_count
     FROM auditoriums
     WHERE theater_id = $1;`;
 
@@ -97,6 +97,50 @@ async function getAuditoriums(){
     const result = await db.query(query);
     return result.rows;
 }
+
+// update theatre
+async function updateTheatre(id, { name, address, contact_information }) {
+
+    // no duplicates
+    const check = await db.query(
+        'SELECT * FROM theaters WHERE name = $1 AND id != $2',
+        [name, id]
+    );
+    if (check.rows.length > 0) {
+        throw new Error('Another theatre with this name already exists');
+    }
+
+    const query = `
+        UPDATE theaters
+        SET name = $1,
+            address = $2,
+            contact_information = $3
+        WHERE id = $4
+        RETURNING *;
+    `;
+
+    const values = [name, address, contact_information, id];
+    const result = await db.query(query, values);
+
+    return result.rows[0]; 
+}
+
+async function deleteTheatre(id) {
+    const result = await db.query(
+        "DELETE FROM theaters WHERE id = $1 RETURNING *;",
+        [id]
+    );
+    return result.rows[0];
+}
+
+async function deleteAuditorium(id) {
+    const result = await db.query(
+        "DELETE FROM auditoriums WHERE id = $1 RETURNING *;",
+        [id]
+    );
+    return result.rows[0];
+}
+
 module.exports = {
     addTheatre,
     addAuditorium,
@@ -104,5 +148,8 @@ module.exports = {
     getTheaterById,
     getAuditoriumsByTheater,
     getAuditoriumById,
-    getAuditoriums
+    getAuditoriums,
+    updateTheatre,
+    deleteTheatre,
+    deleteAuditorium
 };

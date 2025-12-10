@@ -21,6 +21,11 @@ const { addStatistics } = require('./db/addStatistics');
 app.use(express.json());
 app.use(cors());
 
+app.use((req,res,next)=>{
+   console.log("REQUEST →", req.method, req.path);
+   next();
+});
+
 // routes
 app.use('/api/movie', movieRoutes);
 app.use('/api/theatres', theatreRoutes);
