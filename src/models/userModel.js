@@ -116,6 +116,14 @@ async function changeMyPassword(userId, currentPassword, newPassword) {
     'UPDATE users SET password = $1 WHERE id = $2', [newHash, userId]);
   return true;
 }
+// delete staff member
+async function deleteStaff(id) {
+  const result = await db.query(
+    `DELETE FROM users WHERE id=$1 RETURNING id, name, email, role`,
+    [id]
+  );
+  return result.rows[0]; 
+}
 
 
 module.exports = {
@@ -128,5 +136,6 @@ module.exports = {
   updateStaff,
   getProfile,
   updateProfile,
-  changeMyPassword
+  changeMyPassword,
+  deleteStaff
 };

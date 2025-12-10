@@ -61,11 +61,24 @@ async function changeMyPassword(req, res) {
     }
 }
 
+async function deleteStaff(req, res) {
+  const { id } = req.params;
+  try {
+    const removed = await userModel.deleteStaff(id);
+    if (!removed) return res.status(404).json({error: 'Staff member not found'});
+    res.json({ message: 'User deleted', removed });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Delete failed' });
+  }
+}
+
 module.exports = { 
     getAllStaff, 
     createStaff, 
     updateStaff, 
     getMyProfile, 
     updateMyProfile, 
-    changeMyPassword
+    changeMyPassword,
+    deleteStaff
 };

@@ -9,6 +9,9 @@ router.get('/', authRequired, adminOnly, staffController.getAllStaff )
 router.post('/', authRequired, adminOnly, staffController.createStaff);
 // update staff members
 router.patch('/:id', authRequired, adminOnly, staffController.updateStaff);
+// delete staff
+router.delete('/:id', authRequired, adminOnly, staffController.deleteStaff)
+
 // view your profile
 router.get('/profile', authRequired, staffController.getMyProfile)
 // update profile
