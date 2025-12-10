@@ -35,9 +35,6 @@ const { authRequired } = require('../middleware/authenticationMiddleware');
 // Theaters
 router.post('/', authRequired, theatreController.addTheatre);
 router.get('/', authRequired, theatreController.getAllTheaters);
-router.get('/:id', authRequired,  theatreController.getTheaterById);
-router.patch('/edit/:id',  authRequired, theatreController.updateTheatre);
-router.delete("/edit/:id", authRequired, theatreController.deleteTheatre);
 
 // Auditoriums
 router.post('/auditoriums', authRequired, theatreController.addAuditorium);
@@ -45,6 +42,10 @@ router.get('/auditoriums', authRequired, theatreController.getAuditoriums);
 router.get('/auditoriums/:id', authRequired, theatreController.getAuditoriumById);
 router.get('/:theater_id/auditoriums', authRequired, theatreController.getAuditoriumsByTheater);
 router.delete('/auditoriums/:id', authRequired, theatreController.deleteAuditorium);
+
+router.get('/:id', authRequired,  theatreController.getTheaterById);
+router.patch('/edit/:id',  authRequired, theatreController.updateTheatre);
+router.delete("/edit/:id", authRequired, theatreController.deleteTheatre);
 
 module.exports = router;
 
