@@ -19,7 +19,27 @@ const userModel = require('./models/userModel');
 const { addStatistics } = require('./db/addStatistics');
 
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
+
+const allowedOrigins = [
+  "https://delightful-forest-092e86a03.3.azurestaticapps.net",
+  "https://demo-northstar-movie-theatre.azurewebsites.net",
+  "http://localhost:5173"
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  credentials: true, 
+}));
+
 
 app.use((req,res,next)=>{
    console.log("REQUEST →", req.method, req.path);
