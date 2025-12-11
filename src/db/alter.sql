@@ -65,6 +65,11 @@ ALTER TABLE payments
 
 -- STATISTICS
 ALTER TABLE statistics
+    ALTER COLUMN auditorium_id DROP NOT NULL,
+    ALTER COLUMN theater_id DROP NOT NULL,
+    ALTER COLUMN movie_id DROP NOT NULL;
+
+ALTER TABLE statistics
     DROP CONSTRAINT IF EXISTS statistics_movie_id_fkey,
     DROP CONSTRAINT IF EXISTS statistics_theater_id_fkey,
     DROP CONSTRAINT IF EXISTS statistics_auditorium_id_fkey,
