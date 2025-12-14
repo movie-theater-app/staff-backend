@@ -11,7 +11,7 @@ async function importSchedule(req, res) {
         }
         console.error("Error adding schedule: ", error.message);
         res.status(500).json({error: error.message})
-    }©
+    }
 }
 async function updateSchedule (req, res) {
 
