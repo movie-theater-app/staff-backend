@@ -23,7 +23,8 @@ app.use(express.json());
 
 const allowedOrigins = [
   "https://jolly-tree-06e8c5f03.3.azurestaticapps.net",
-  "http://localhost:5173"
+  "http://localhost:5173",
+  "https://staff-frontend-endpoint-gsajbxb0faepbcgn.z01.azurefd.net/api"
 ];
 
 app.use(cors({
