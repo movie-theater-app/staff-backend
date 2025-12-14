@@ -38,10 +38,9 @@ async function importSchedule (scheduleData) {
     const result = await db.query(query, values);
 
     if (result.rowCount === 0){
-        const error = `Error adding schedule, there is already a movie 
-        playing with start time: ${start_time}, end time: ${end_time} and day (${screening_date}) in that auditorium with id: ${auditorium_id}) `
-        console.error(error);
-        return null;
+        throw new Error(
+            `Schedule conflict: Auditorium ${auditorium_id} already has a movie on ${screening_date} between ${start_time} and ${end_time}`
+        );
     }
 
     const schedule = result.rows[0];

@@ -6,9 +6,12 @@ async function importSchedule(req, res) {
         const schedule = await Schedule.importSchedule(req.body);
         res.status(201).json({schedule});
     } catch (error){
+        if (error.message.includes("Schedule conflict")) {
+            return res.status(409).json({ error: error.message });
+        }
         console.error("Error adding schedule: ", error.message);
         res.status(500).json({error: error.message})
-    }
+    }©
 }
 async function updateSchedule (req, res) {
 
